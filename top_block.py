@@ -24,6 +24,7 @@ from gnuradio import filter
 from gnuradio import gr
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
+from gnuradio.qtgui import Range, RangeWidget
 from optparse import OptionParser
 import epy_block_0
 import pmt
@@ -62,18 +63,22 @@ class top_block(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 100000
+        self.frekk = frekk = 7018910
 
         ##################################################
         # Blocks
         ##################################################
         self.low_pass_filter_0 = filter.fir_filter_fff(1, firdes.low_pass(
         	1, samp_rate, 1000, 100, firdes.WIN_HAMMING, 6.76))
+        self._frekk_range = Range(7000000, 8000000, 10000, 7018910, 200)
+        self._frekk_win = RangeWidget(self._frekk_range, self.set_frekk, "frekk", "counter_slider", float)
+        self.top_grid_layout.addWidget(self._frekk_win)
         self.epy_block_0 = epy_block_0.blk()
         self.digital_symbol_sync_xx_0 = digital.symbol_sync_ff(digital.TED_MUELLER_AND_MULLER, 125, 0.045, 1.0, 1.0, 1.5, 1, digital.constellation_bpsk().base(), digital.IR_MMSE_8TAP, 128, ([]))
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
         self.blocks_threshold_ff_0 = blocks.threshold_ff(0.08, 0.12, 0)
         self.blocks_float_to_char_0_0 = blocks.float_to_char(1, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/pi/test.raw', True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/pi/grc-ask/matlab_IQ.raw', True)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
 
@@ -102,6 +107,12 @@ class top_block(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 1000, 100, firdes.WIN_HAMMING, 6.76))
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
+
+    def get_frekk(self):
+        return self.frekk
+
+    def set_frekk(self, frekk):
+        self.frekk = frekk
 
 
 def main(top_block_cls=top_block, options=None):

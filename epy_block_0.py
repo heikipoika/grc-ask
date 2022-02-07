@@ -54,7 +54,7 @@ class blk(gr.sync_block):  # other base classes are basic_block, decim_block, in
                             self.msg_cnt = 0
                             sys.stdout.write("*") 
                     else:
-                        if (self.msg_start == 1) and (self.msg_cnt < 6):
+                        if (self.msg_start == 1) and (self.msg_cnt < 12):
                             self.msg_cnt = self.msg_cnt + 1
                             sys.stdout.write("%x " % self.buffer) # Print if in between open close
                         else:

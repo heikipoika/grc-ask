@@ -23,9 +23,25 @@ Im using three sources of data:
 Then theres just a lowpass filter to get rid of unwanted noise, the symbol sync to extract the databits and finally my simple Python block to
 decode the data.
 
-## gendata.m
+## Matlab gendata.m
+
+![Waveform](/images/waveform.png)
 
 gendata.m is a matlab script for generating a encoded signal, with noise and store it as raw IQ data that can be read by GRC. Why matlab, and not somethingmore open sourceish? Well, what can I say, I like matlab. Input paramaters to the script are:
-* Noisefloor
-* SNR (the signals strength relative to the chosen floor)
-* PW jitter (in percent)
+* Samplerate (samples/s)
+* Bitrate (bits/s)
+* Noisefloor (dB)
+* SNR (dB) - the signals strength relative to the chosen noisefloor
+* PW jitter (percent) - will make the '1's and '0's jitter i length
+* Amplitude variation (percent) - will attenuate parts of the message max chosen percent
+* Message (hexadecimal) - All the data (inluding start/stop symbol) to be sent. note: leading zeros will be removed, but not trailing.
+
+Currently the script lowpass filters the signal with a cutoff at 1kHz in order to smooth off the edges for a reasonable channelwidth.
+
+## Python decode block
+
+![Decoded waveform](/images/decoded.png)
+
+This block will decode any bits betwen the start and stop symbol (currently 0xa) being 4bit symbols, and output it as hexadecimal text to the console.
+
+![Console output](/images/console.png)
